@@ -42,11 +42,17 @@ export const register = async (req: Request, res: Response) => {
       }
     });
 
-    // Gerar token
+    // Gerar token (usar segundos numéricos para compatibilidade com jsonwebtoken@9)
+    const jwtSecret = process.env.JWT_SECRET as string;
+    const expiresInEnv = process.env.JWT_EXPIRES_IN;
+    const expiresIn = expiresInEnv && !isNaN(Number(expiresInEnv))
+      ? Number(expiresInEnv)
+      : 60 * 60 * 24 * 7; // 7 dias
+
     const token = jwt.sign(
       { userId: user.id, email: user.email, role: user.role },
-      process.env.JWT_SECRET!,
-      { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
+      jwtSecret,
+      { expiresIn }
     );
 
     res.status(201).json({
@@ -84,12 +90,18 @@ export const login = async (req: Request, res: Response) => {
       return res.status(401).json({ error: 'Credenciais inválidas' });
     }
 
-    // Gerar token
-    const token = jwt.sign(
-      { userId: user.id, email: user.email, role: user.role },
-      process.env.JWT_SECRET!,
-      { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
-    );
+    // Gerar token (usar segundos numéricos para compatibilidade com jsonwebtoken@9)
+  const jwtSecret = process.env.JWT_SECRET as string;
+  const expiresInEnv = process.env.JWT_EXPIRES_IN;
+  const expiresIn = expiresInEnv && !isNaN(Number(expiresInEnv))
+    ? Number(expiresInEnv)
+    : 60 * 60 * 24 * 7;
+
+  const token = jwt.sign(
+    { userId: user.id, email: user.email, role: user.role },
+    jwtSecret,
+    { expiresIn }
+  );
 
     res.json({
       message: 'Login realizado com sucesso',
