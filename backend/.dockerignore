@@ -1,0 +1,12 @@
+node_modules
+npm-cache
+npm-debug.log*
+yarn.lock
+.pnpm-store
+.git
+.gitignore
+.env
+.DS_Store
+dist
+coverage
+**/*.tsbuildinfo
