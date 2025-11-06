@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banco Seguro - Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            max-width: 400px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            color: #667eea;
+            font-size: 28px;
+        }
+
+        .alert {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .alert strong {
+            color: #856404;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .btn:hover {
+            background: #5568d3;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .suspicious {
+            /* Sinais sutis de phishing */
+            cursor: not-allowed;
+        }
+
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .warning-result {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <h1>🏦 Banco Seguro</h1>
+        </div>
+
+        <div class="alert">
+            <strong>⚠️ Atenção!</strong><br>
+            Por questões de segurança, você precisa confirmar seus dados.
+            Sua conta será bloqueada em <strong>24 horas</strong> caso não faça login!
+        </div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">Usuário ou CPF:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Senha:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+
+            <button type="submit" class="btn">Acessar Minha Conta</button>
+        </form>
+
+        <div id="result"></div>
+
+        <div class="footer">
+            <p>© 2025 Banco Seguro - Todos os direitos reservados</p>
+            <p style="margin-top: 5px; font-size: 10px; color: #999;">
+                <!-- Sinal de phishing: URL suspeita na barra de endereço -->
+                www.bancoseguro-verificacao.com.br
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Substituir CAMPAIGN_ID pelo ID real da campanha
+        const CAMPAIGN_ID = '{{CAMPAIGN_ID}}';
+        const USER_ID = '{{USER_ID}}';
+        const API_URL = '{{API_URL}}';
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // Enviar dados para o backend
+            try {
+                const response = await fetch(`${API_URL}/api/tracking/submit/${CAMPAIGN_ID}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username,
+                        password,
+                        userId: USER_ID
+                    })
+                });
+
+                const data = await response.json();
+
+                const resultDiv = document.getElementById('result');
+                resultDiv.style.display = 'block';
+                resultDiv.className = 'warning-result';
+                resultDiv.innerHTML = `
+                    <h3>⚠️ ATENÇÃO!</h3>
+                    <p><strong>${data.warning}</strong></p>
+                    <p>Este foi um teste de segurança. Você acabou de inserir suas credenciais em um site falso!</p>
+                    <p style="margin-top: 10px;">
+                        <strong>Sinais de phishing nesta página:</strong><br>
+                        • URL suspeita (não é o domínio oficial do banco)<br>
+                        • Mensagem de urgência (bloqueio em 24h)<br>
+                        • Pedido de senha por link de e-mail<br>
+                    </p>
+                `;
+
+                // Limpar formulário
+                document.getElementById('loginForm').reset();
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao processar dados');
+            }
+        });
+    </script>
+</body>
+</html>

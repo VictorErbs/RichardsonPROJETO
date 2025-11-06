@@ -1,0 +1,80 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   @default("USER") // "USER" ou "ADMIN"
+  points    Int      @default(0)
+  level     Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  emailLogs   EmailLog[]
+  clicks      Click[]
+  submissions Submission[]
+}
+
+model Campaign {
+  id          String   @id @default(uuid())
+  title       String   @unique
+  description String
+  emailSubject String
+  emailBody   String   // HTML template do e-mail
+  senderName  String   // Nome do remetente falso
+  senderEmail String   // E-mail do remetente falso
+  targetUrl   String   // URL da página fake
+  difficulty  String   @default("EASY") // "EASY", "MEDIUM", "HARD"
+  points      Int      @default(10)
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  emailLogs   EmailLog[]
+}
+
+model EmailLog {
+  id         String   @id @default(uuid())
+  userId     String
+  campaignId String
+  sentAt     DateTime @default(now())
+  opened     Boolean  @default(false)
+  openedAt   DateTime?
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  clicks   Click[]
+}
+
+model Click {
+  id         String   @id @default(uuid())
+  userId     String
+  emailLogId String
+  clickedAt  DateTime @default(now())
+  ipAddress  String?
+  userAgent  String?
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  emailLog EmailLog @relation(fields: [emailLogId], references: [id], onDelete: Cascade)
+}
+
+model Submission {
+  id          String   @id @default(uuid())
+  userId      String
+  campaignId  String
+  username    String?  // Dados que o usuário digitou
+  password    String?  // Dados que o usuário digitou (não validados)
+  submittedAt DateTime @default(now())
+  ipAddress   String?
+  userAgent   String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
