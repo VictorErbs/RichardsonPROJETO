@@ -7,13 +7,8 @@ export default defineConfig({
   build: {
     // Otimizações de bundle
     target: 'esnext',
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: true,
-        drop_debugger: true
-      }
-    },
+    // Use esbuild minifier (mais rápido e sem dependências extras)
+    minify: 'esbuild',
     // Code splitting otimizado
     rollupOptions: {
       output: {
@@ -27,6 +22,10 @@ export default defineConfig({
     chunkSizeWarningLimit: 1000,
     cssCodeSplit: true,
     sourcemap: false
+  },
+  // Remover console/debugger no build usando esbuild
+  esbuild: {
+    drop: ['console', 'debugger']
   },
   server: {
     port: 5173,

@@ -22,16 +22,20 @@ app.use(helmet({
 app.use(compression()); // Gzip compression
 
 // CORS com configurações otimizadas
+const allowedOrigins: (string | RegExp)[] = [
+  'http://localhost:5173',
+  'http://localhost:5174',
+  'http://127.0.0.1:5173',
+  'http://127.0.0.1:5174',
+  'http://192.168.1.12:5173',
+  'http://192.168.1.12:5174',
+];
+if (process.env.FRONTEND_URL) {
+  allowedOrigins.push(process.env.FRONTEND_URL);
+}
+
 app.use(cors({
-  origin: [
-    'http://localhost:5173', 
-    'http://localhost:5174', 
-    'http://127.0.0.1:5173', 
-    'http://127.0.0.1:5174',
-    'http://192.168.1.12:5173',
-    'http://192.168.1.12:5174',
-    process.env.FRONTEND_URL
-  ].filter(Boolean),
+  origin: allowedOrigins,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']

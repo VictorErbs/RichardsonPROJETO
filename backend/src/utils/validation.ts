@@ -54,7 +54,7 @@ export const validateRequest = <T>(schema: z.ZodSchema<T>) => {
       if (error instanceof z.ZodError) {
         return res.status(400).json({
           error: 'Dados inválidos',
-          details: error.errors.map((err) => ({
+          details: error.issues.map((err) => ({
             field: err.path.join('.'),
             message: err.message,
           })),

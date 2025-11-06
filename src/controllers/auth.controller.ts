@@ -43,10 +43,17 @@ export const register = async (req: Request, res: Response) => {
     });
 
     // Gerar token
+    const jwtSecret = process.env.JWT_SECRET as string;
+    const expiresInEnv = process.env.JWT_EXPIRES_IN;
+    // Use numeric seconds to satisfy jsonwebtoken@9 type expectations
+    const expiresIn = expiresInEnv && !isNaN(Number(expiresInEnv))
+      ? Number(expiresInEnv)
+      : 60 * 60 * 24 * 7; // 7 days
+
     const token = jwt.sign(
       { userId: user.id, email: user.email, role: user.role },
-      process.env.JWT_SECRET!,
-      { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
+      jwtSecret,
+      { expiresIn }
     );
 
     res.status(201).json({
@@ -85,10 +92,16 @@ export const login = async (req: Request, res: Response) => {
     }
 
     // Gerar token
+    const jwtSecret = process.env.JWT_SECRET as string;
+    const expiresInEnv = process.env.JWT_EXPIRES_IN;
+    const expiresIn = expiresInEnv && !isNaN(Number(expiresInEnv))
+      ? Number(expiresInEnv)
+      : 60 * 60 * 24 * 7;
+
     const token = jwt.sign(
       { userId: user.id, email: user.email, role: user.role },
-      process.env.JWT_SECRET!,
-      { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
+      jwtSecret,
+      { expiresIn }
     );
 
     res.json({
