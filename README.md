@@ -59,79 +59,156 @@ Este é um **simulador realista de ataques de phishing** criado para fins educac
 
 ## 🛠️ Tecnologias Utilizadas
 
-| Categoria | Tecnologia |
-|-----------|-----------|
-| **Backend** | Node.js + Express + TypeScript |
-| **Banco de Dados** | SQLite (desenvolvimento) / PostgreSQL (produção) |
-| **ORM** | Prisma |
-| **Autenticação** | JWT + Bcrypt |
-| **E-mail** | Nodemailer (SMTP) |
-| **Frontend** | HTML/CSS (páginas fake) |
+### Backend
+| Tecnologia | Versão | Descrição |
+|-----------|--------|-----------|
+| **Node.js** | 18+ | Runtime JavaScript para servidor |
+| **Express** | 4.18.2 | Framework web minimalista e flexível |
+| **TypeScript** | 5.3.2 | Superset JavaScript com tipagem estática |
+| **Prisma ORM** | 5.6.0 | ORM moderno para Node.js e TypeScript |
+| **SQLite** | - | Banco de dados local para desenvolvimento |
+| **JWT** | 9.0.2 | Autenticação via JSON Web Tokens |
+| **Bcrypt** | 2.4.3 | Hash seguro de senhas |
+| **Nodemailer** | 6.9.7 | Envio de emails via SMTP |
+| **Resend** | 4.0.0 | Serviço moderno de envio de emails |
+| **Node-cron** | 3.0.3 | Agendamento de tarefas automáticas |
+
+### Frontend
+| Tecnologia | Versão | Descrição |
+|-----------|--------|-----------|
+| **React** | 18+ | Biblioteca para interfaces de usuário |
+| **Vite** | 7.2.1 | Build tool rápida para projetos modernos |
+| **TypeScript** | 5.9.3 | Tipagem estática para JavaScript |
+| **React Router DOM** | 7.9.5 | Roteamento para aplicações React |
+| **Axios** | 1.13.2 | Cliente HTTP para requisições |
+| **Tailwind CSS** | 3.x | Framework CSS utility-first |
+
+### Ferramentas de Desenvolvimento
+- **ts-node-dev** - Hot reload para TypeScript
+- **ESLint** - Linting de código
+- **Prettier** - Formatação de código
+- **PostCSS** - Transformação de CSS
+- **Autoprefixer** - Prefixos CSS automáticos
 
 ---
 
 ## 📦 Instalação e Configuração
 
 ### 1️⃣ Pré-requisitos
-- Node.js 18+ instalado
-- npm ou yarn
-- Conta de e-mail Gmail (para enviar e-mails)
+- **Node.js 18+** instalado ([Download](https://nodejs.org/))
+- **npm** ou **yarn**
+- **Git** para versionamento
+- Conta **Resend** (gratuita) ou Gmail para envio de emails
 
-### 2️⃣ Instalar Dependências
+### 2️⃣ Clonar o Repositório
 ```bash
+git clone https://github.com/VictorErbs/RichardsonPROJETO.git
+cd RichardsonPROJETO
+```
+
+### 3️⃣ Instalar Dependências
+
+**Backend:**
+```bash
+cd backend
 npm install
 ```
 
-### 3️⃣ Configurar Variáveis de Ambiente
-Edite o arquivo `.env` com suas configurações:
+**Frontend:**
+```bash
+cd frontend
+npm install
+```
 
+### 4️⃣ Configurar Variáveis de Ambiente
+
+**Backend:** Crie `backend/.env`
 ```env
 # Servidor
 PORT=3000
+NODE_ENV=development
 
 # Banco de Dados
 DATABASE_URL="file:./dev.db"
 
-# JWT (troque por uma chave secreta forte)
-JWT_SECRET=sua_chave_super_secreta_aqui
+# JWT (IMPORTANTE: Troque por uma chave secreta forte em produção!)
+JWT_SECRET=sua_chave_super_secreta_aqui_min_32_caracteres
+JWT_EXPIRES_IN=7d
 
-# Configuração de E-mail (Gmail)
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USER=seu_email@gmail.com
-SMTP_PASS=sua_senha_de_app_aqui
-EMAIL_FROM=noreply@phishingsimulator.com
+# Email - Opção 1: Resend (Recomendado)
+TRANSPORT_PROVIDER=RESEND
+RESEND_API_KEY=re_sua_chave_resend_aqui
+EMAIL_FROM=onboarding@resend.dev
+
+# Email - Opção 2: SMTP (Gmail)
+# TRANSPORT_PROVIDER=SMTP
+# SMTP_HOST=smtp.gmail.com
+# SMTP_PORT=587
+# SMTP_USER=seu_email@gmail.com
+# SMTP_PASS=sua_senha_de_app_aqui
+# EMAIL_FROM=seu_email@gmail.com
 
 # URLs
 BACKEND_URL=http://localhost:3000
-FRONTEND_URL=http://localhost:3000
+FRONTEND_URL=http://localhost:5173
 ```
 
-**📧 Como Obter Senha de App do Gmail:**
+**Frontend:** Crie `frontend/.env`
+```env
+VITE_API_URL=http://localhost:3000/api
+```
+
+**📧 Configuração de Email:**
+
+**Opção 1 - Resend (Recomendado):**
+1. Crie conta em [resend.com](https://resend.com) (100 emails/dia grátis)
+2. Gere uma API Key
+3. Use `onboarding@resend.dev` como remetente (sem verificação de domínio)
+
+**Opção 2 - Gmail:**
 1. Acesse: https://myaccount.google.com/security
 2. Ative "Verificação em duas etapas"
 3. Vá em: https://myaccount.google.com/apppasswords
 4. Gere uma senha para "Aplicativo de e-mail"
 5. Use essa senha no `.env` (campo `SMTP_PASS`)
 
-### 4️⃣ Configurar Banco de Dados
+### 5️⃣ Configurar Banco de Dados
 ```bash
+cd backend
+
 # Gerar Prisma Client
 npx prisma generate
 
 # Criar banco de dados e tabelas
-npx prisma migrate dev --name init
+npx prisma migrate deploy
 
-# Popular com dados de exemplo
+# Popular com dados de exemplo (Admin + 3 usuários teste)
 npx ts-node src/scripts/seed.ts
 ```
 
-### 5️⃣ Iniciar Servidor
+### 6️⃣ Iniciar os Servidores
+
+**Backend (Terminal 1):**
 ```bash
+cd backend
 npm run dev
+# Rodando em: http://localhost:3000
 ```
 
-O servidor estará rodando em: **http://localhost:3000**
+**Frontend (Terminal 2):**
+```bash
+cd frontend
+npm run dev
+# Rodando em: http://localhost:5173
+```
+
+### 7️⃣ Acessar a Aplicação
+
+Abra o navegador em: **http://localhost:5173**
+
+**Credenciais padrão:**
+- Admin: `admin@phishing.com` / `admin123`
+- Usuário teste: `joao@teste.com` / `teste123`
 
 ---
 
