@@ -72,37 +72,39 @@ export const trackEmailOpen = async (req: Request, res: Response) => {
 
 export const trackSubmission = async (req: Request, res: Response) => {
   try {
-    const { campaignId } = req.params;
-    const { username, password, userId } = req.body;
+    const { emailLogId } = req.params;
+    const { username, password } = req.body;
     const ipAddress = req.ip;
     const userAgent = req.headers['user-agent'];
 
-    const campaign = await prisma.campaign.findUnique({
-      where: { id: campaignId }
+    // Buscar o emailLog com usuário e campanha
+    const emailLog = await prisma.emailLog.findUnique({
+      where: { id: emailLogId },
+      include: {
+        campaign: true,
+        user: true
+      }
     });
 
-    if (!campaign) {
-      return res.status(404).json({ error: 'Campanha não encontrada' });
+    if (!emailLog) {
+      return res.status(404).json({ error: 'Link inválido' });
     }
 
     // Registrar a submissão
     const submission = await prisma.submission.create({
       data: {
-        userId,
-        campaignId,
+        userId: emailLog.userId,
+        campaignId: emailLog.campaignId,
         username,
         password, // Armazenar como texto (é simulação)
         ipAddress,
         userAgent
-      },
-      include: {
-        user: true
       }
     });
 
     // Enviar e-mail educativo
     const emailService = await import('../services/email.service');
-    await emailService.sendEducationalEmail(submission.user, campaign, 'submission');
+    await emailService.sendEducationalEmail(emailLog.user, emailLog.campaign, 'submission');
 
     res.json({
       message: 'Dados recebidos',

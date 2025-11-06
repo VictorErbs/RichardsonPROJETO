@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Netflix - Verificação de Conta</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background: #000;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            padding: 20px 50px;
+            background: #000;
+            border-bottom: 1px solid #e50914;
+        }
+
+        .logo {
+            color: #e50914;
+            font-size: 40px;
+            font-weight: bold;
+            letter-spacing: -2px;
+        }
+
+        .container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background: linear-gradient(to bottom, #000 0%, #141414 100%);
+        }
+
+        .login-box {
+            background: rgba(0, 0, 0, 0.75);
+            padding: 60px 68px 40px;
+            border-radius: 4px;
+            max-width: 450px;
+            width: 100%;
+        }
+
+        .alert {
+            background: #e87c03;
+            color: #fff;
+            padding: 16px 20px;
+            margin-bottom: 30px;
+            border-radius: 4px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .alert strong {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 500;
+            margin-bottom: 28px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        input {
+            width: 100%;
+            height: 50px;
+            padding: 16px 20px;
+            background: #333;
+            border: none;
+            border-radius: 4px;
+            color: #fff;
+            font-size: 16px;
+        }
+
+        input::placeholder {
+            color: #8c8c8c;
+        }
+
+        input:focus {
+            outline: none;
+            background: #454545;
+        }
+
+        .btn {
+            width: 100%;
+            height: 50px;
+            background: #e50914;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 24px;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background: #f40612;
+        }
+
+        .btn:active {
+            background: #b20710;
+        }
+
+        .help {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 16px;
+            font-size: 13px;
+        }
+
+        .help a {
+            color: #b3b3b3;
+            text-decoration: none;
+        }
+
+        .help a:hover {
+            text-decoration: underline;
+        }
+
+        .checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox input {
+            width: 16px;
+            height: 16px;
+            margin: 0;
+        }
+
+        .footer {
+            padding: 30px 50px;
+            background: rgba(0, 0, 0, 0.8);
+            color: #757575;
+            font-size: 13px;
+            border-top: 1px solid #222;
+        }
+
+        .footer-content {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .success-message h2 {
+            color: #46d369;
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+
+        .security-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #8c8c8c;
+        }
+
+        .demo-info {
+            background: #0e639c;
+            border-left: 4px solid #2196f3;
+            padding: 20px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        .demo-info h3 {
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .demo-info p {
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+
+        .demo-info a {
+            color: #66ccff;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">NETFLIX</div>
+    </div>
+
+    <div class="container">
+        <div class="login-box">
+            <div class="alert">
+                <strong>⚠️ Verificação de Pagamento Necessária</strong>
+                Detectamos um problema com seu método de pagamento. Sua conta será suspensa em 24 horas se não atualizar suas informações.
+            </div>
+
+            <h1>Entrar</h1>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <input type="email" id="email" name="email" placeholder="Email ou número de telefone" required>
+                </div>
+
+                <div class="form-group">
+                    <input type="password" id="password" name="password" placeholder="Senha" required>
+                </div>
+
+                <button type="submit" class="btn">Verificar Conta</button>
+
+                <div class="help">
+                    <div class="checkbox">
+                        <input type="checkbox" id="remember">
+                        <label for="remember">Lembre-se de mim</label>
+                    </div>
+                    <a href="#">Precisa de ajuda?</a>
+                </div>
+
+                <div class="security-badge">
+                    🔒 Conexão segura SSL/TLS
+                </div>
+            </form>
+
+            <div id="successMessage" class="success-message">
+                <h2>✅ Verificação Concluída!</h2>
+                <p>Obrigado por verificar sua conta.</p>
+                <p style="margin-top: 10px; font-size: 14px; color: #b3b3b3;">Redirecionando...</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="footer-content">
+            <p>Dúvidas? Ligue 0800-761-4631</p>
+            <p style="margin-top: 30px;">© 2025 Netflix, Inc.</p>
+        </div>
+    </div>
+
+    <script>
+        // Capturar o ID de tracking da URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const trackingId = urlParams.get('id');
+
+        console.log('URL atual:', window.location.href);
+        console.log('Tracking ID:', trackingId);
+
+        // Se não houver ID, mostrar mensagem informativa
+        if (!trackingId) {
+            console.log('Sem ID de tracking - mostrando mensagem demo');
+            
+            const alertDiv = document.querySelector('.alert');
+            const formElement = document.getElementById('loginForm');
+            
+            if (alertDiv) alertDiv.style.display = 'none';
+            if (formElement) {
+                formElement.innerHTML = `
+                    <div class="demo-info">
+                        <h3>ℹ️ Página de Demonstração</h3>
+                        <p>Esta é uma página fake da Netflix para fins educacionais de treinamento anti-phishing.</p>
+                        <p style="margin-top: 15px;"><strong>Como testar corretamente:</strong></p>
+                        <p>1. Acesse <a href="http://localhost:5173">http://localhost:5173</a></p>
+                        <p>2. Login: admin@admin.com / admin123</p>
+                        <p>3. Clique em "Enviar Agora" em uma campanha</p>
+                        <p>4. Verifique seu email e clique no link</p>
+                        <p style="margin-top: 15px; color: #e87c03;"><strong>Você está vendo esta mensagem porque acessou a página diretamente sem um ID de tracking válido.</strong></p>
+                    </div>
+                `;
+            }
+            return;
+        }
+
+        console.log('ID de tracking encontrado:', trackingId);
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch(`http://localhost:3000/api/tracking/submit/${trackingId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: email,
+                        password
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Erro ao enviar dados');
+                }
+
+                // Esconder formulário e mostrar mensagem de sucesso
+                document.getElementById('loginForm').style.display = 'none';
+                document.querySelector('.alert').style.display = 'none';
+                document.getElementById('successMessage').style.display = 'block';
+
+                // Mostrar alerta educativo
+                setTimeout(() => {
+                    alert('⚠️ ATENÇÃO: Este era um teste de phishing!\n\n' +
+                          'Você acabou de fornecer suas credenciais da Netflix em um site falso.\n\n' +
+                          'Em um ataque real, um criminoso teria acesso à sua conta.\n\n' +
+                          '🛡️ Sinais de phishing nesta página:\n' +
+                          '✓ Mensagem de urgência (suspensão em 24h)\n' +
+                          '✓ URL suspeita (não é netflix.com)\n' +
+                          '✓ Pedido de senha via email\n' +
+                          '✓ Design muito similar ao original\n\n' +
+                          'Dicas de segurança:\n' +
+                          '• Sempre verifique a URL do site\n' +
+                          '• Netflix nunca pede senha por email\n' +
+                          '• Use autenticação de dois fatores\n' +
+                          '• Desconfie de mensagens urgentes\n\n' +
+                          'Verifique seu email para mais informações educativas!');
+                    window.close();
+                }, 2000);
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao processar dados. Por favor, tente novamente.');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -6,6 +6,6 @@ const router = Router();
 // Public routes (não requerem autenticação - são chamadas pelos links nos e-mails)
 router.get('/click/:emailLogId', trackClick);
 router.get('/open/:emailLogId', trackEmailOpen);
-router.post('/submit/:campaignId', trackSubmission);
+router.post('/submit/:emailLogId', trackSubmission);
 
 export default router;

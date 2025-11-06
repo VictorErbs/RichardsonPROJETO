@@ -1,15 +1,21 @@
 # Dependencies
 node_modules/
+package-lock.json
 
 # Build output
 dist/
 
-# Environment variables (comentado para permitir commit do .env - APENAS PARA FINS EDUCACIONAIS)
-# .env
+# Environment variables
+.env
+.env.local
+.env.production
 
-# Database (comentado para permitir commit do banco - APENAS PARA FINS EDUCACIONAIS)
-# *.db
-# *.db-journal
+# Database
+*.db
+*.db-journal
+
+# Prisma
+prisma/migrations/
 
 # Logs
 logs/
@@ -25,3 +31,8 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
+
+# Arquivos duplicados na raiz (usar apenas backend/ e frontend/)
+/src/
+/public/
+/prisma/

@@ -21,6 +21,10 @@ model User {
   emailLogs   EmailLog[]
   clicks      Click[]
   submissions Submission[]
+
+  @@index([email])
+  @@index([points])
+  @@index([role])
 }
 
 model Campaign {
@@ -43,6 +47,10 @@ model Campaign {
   updatedAt   DateTime @updatedAt
 
   emailLogs   EmailLog[]
+
+  @@index([active])
+  @@index([autoSend])
+  @@index([difficulty])
 }
 
 model EmailLog {
@@ -56,6 +64,11 @@ model EmailLog {
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
   clicks   Click[]
+
+  @@index([userId])
+  @@index([campaignId])
+  @@index([sentAt])
+  @@index([opened])
 }
 
 model Click {
@@ -68,6 +81,10 @@ model Click {
 
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   emailLog EmailLog @relation(fields: [emailLogId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([emailLogId])
+  @@index([clickedAt])
 }
 
 model Submission {
@@ -81,4 +98,8 @@ model Submission {
   userAgent   String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([campaignId])
+  @@index([submittedAt])
 }

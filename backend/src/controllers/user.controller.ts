@@ -23,6 +23,8 @@ export const getAllUsers = async (req: Request, res: Response) => {
       orderBy: { createdAt: 'desc' }
     });
 
+    // Cache control para 1 minuto
+    res.setHeader('Cache-Control', 'private, max-age=60');
     res.json({ users });
   } catch (error) {
     console.error('Erro ao buscar usuários:', error);
@@ -92,6 +94,8 @@ export const getRanking = async (req: Request, res: Response) => {
       take: 50
     });
 
+    // Cache control para 5 minutos
+    res.setHeader('Cache-Control', 'public, max-age=300');
     res.json({ ranking });
   } catch (error) {
     console.error('Erro ao buscar ranking:', error);

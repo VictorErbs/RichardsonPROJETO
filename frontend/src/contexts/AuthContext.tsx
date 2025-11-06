@@ -59,6 +59,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     setToken(newToken);
     setUser(newUser);
+    
+    // Disparar evento customizado para atualizar o ranking
+    window.dispatchEvent(new CustomEvent('userRegistered'));
   };
 
   const logout = () => {

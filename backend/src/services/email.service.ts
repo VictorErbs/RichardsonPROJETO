@@ -42,16 +42,36 @@ export const sendPhishingEmail = async (user: User, campaign: Campaign) => {
     // Adicionar pixel de tracking
     emailBody += `<img src="${openTrackingUrl}" width="1" height="1" style="display:none;" />`;
 
+    // MODO ACADÊMICO: Enviar para o email verificado com informações do usuário
+    const isAcademicMode = process.env.ACADEMIC_MODE === 'true';
+    const recipientEmail = isAcademicMode ? (process.env.TEST_EMAIL_TO || user.email) : user.email;
+    
+    let emailSubject = campaign.emailSubject;
+    let finalEmailBody = emailBody;
+
+    // Se modo acadêmico, adiciona banner informativo
+    if (isAcademicMode) {
+      emailSubject = `[TESTE: ${user.email}] ${campaign.emailSubject}`;
+      finalEmailBody = `
+        <div style="background: #fff3cd; border: 2px solid #ffc107; padding: 15px; margin-bottom: 20px;">
+          <strong>🎓 MODO ACADÊMICO - SIMULAÇÃO</strong><br>
+          Este email seria enviado para: <strong>${user.email}</strong> (${user.name})<br>
+          Campanha: ${campaign.title}
+        </div>
+        ${emailBody}
+      `;
+    }
+
     // Enviar e-mail
     await mailProvider.send({
       from: `"${campaign.senderName}" <${process.env.EMAIL_FROM}>`,
-      to: user.email,
-      subject: campaign.emailSubject,
-      html: emailBody,
+      to: recipientEmail,
+      subject: emailSubject,
+      html: finalEmailBody,
       replyTo: campaign.senderEmail,
     });
 
-    console.log(`✅ E-mail de phishing enviado para ${user.email}`);
+    console.log(`✅ E-mail enviado para ${user.email}${isAcademicMode ? ` (redirecionado para ${recipientEmail})` : ''}`);
     return { success: true, emailLogId: emailLog.id };
   } catch (error) {
     console.error(`❌ Erro ao enviar e-mail para ${user.email}:`, error);

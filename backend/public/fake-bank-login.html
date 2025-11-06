@@ -158,10 +158,44 @@
     </div>
 
     <script>
-        // Substituir CAMPAIGN_ID pelo ID real da campanha
-        const CAMPAIGN_ID = '{{CAMPAIGN_ID}}';
-        const USER_ID = '{{USER_ID}}';
-        const API_URL = '{{API_URL}}';
+        // Capturar o ID de tracking da URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const trackingId = urlParams.get('id');
+
+        console.log('🏦 [Banco] URL atual:', window.location.href);
+        console.log('🏦 [Banco] Tracking ID:', trackingId);
+
+        // Se não houver ID, mostrar mensagem informativa
+        if (!trackingId) {
+            console.log('🏦 [Banco] Sem ID de tracking - mostrando mensagem demo');
+            
+            const formElement = document.getElementById('loginForm');
+            const alertDiv = document.querySelector('.alert');
+            
+            if (alertDiv) alertDiv.style.display = 'none';
+            if (formElement) {
+                formElement.innerHTML = `
+                    <div style="background: #e3f2fd; border: 2px solid #2196f3; border-radius: 5px; padding: 20px; text-align: center;">
+                        <h3 style="color: #1976d2; margin-bottom: 10px;">ℹ️ Página de Demonstração</h3>
+                        <p style="margin-bottom: 15px;">Esta é uma página fake de phishing para fins educacionais.</p>
+                        <p style="font-size: 14px; color: #666;">
+                            Para usar esta página, você precisa acessá-la através de um link de campanha válido.<br>
+                            <strong>Envie uma campanha pelo painel admin para testar!</strong>
+                        </p>
+                        <p style="margin-top: 15px; font-size: 13px;">
+                            <strong>Como testar:</strong><br>
+                            1. Acesse <a href="http://localhost:5173" style="color: #2196f3;">http://localhost:5173</a><br>
+                            2. Login: admin@admin.com / admin123<br>
+                            3. Clique em "Enviar Agora" em uma campanha<br>
+                            4. Verifique seu email e clique no link
+                        </p>
+                    </div>
+                `;
+            }
+            return;
+        }
+
+        console.log('🏦 [Banco] ID de tracking encontrado:', trackingId);
 
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -169,41 +203,54 @@
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
 
+            console.log('🏦 [Banco] Enviando dados para tracking...');
+
             // Enviar dados para o backend
             try {
-                const response = await fetch(`${API_URL}/api/tracking/submit/${CAMPAIGN_ID}`, {
+                const response = await fetch(`http://localhost:3000/api/tracking/submit/${trackingId}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
                         username,
-                        password,
-                        userId: USER_ID
+                        password
                     })
                 });
 
+                if (!response.ok) {
+                    throw new Error('Erro ao enviar dados');
+                }
+
                 const data = await response.json();
+                console.log('🏦 [Banco] Resposta recebida:', data);
 
                 const resultDiv = document.getElementById('result');
-                resultDiv.style.display = 'block';
-                resultDiv.className = 'warning-result';
-                resultDiv.innerHTML = `
-                    <h3>⚠️ ATENÇÃO!</h3>
-                    <p><strong>${data.warning}</strong></p>
-                    <p>Este foi um teste de segurança. Você acabou de inserir suas credenciais em um site falso!</p>
-                    <p style="margin-top: 10px;">
-                        <strong>Sinais de phishing nesta página:</strong><br>
-                        • URL suspeita (não é o domínio oficial do banco)<br>
-                        • Mensagem de urgência (bloqueio em 24h)<br>
-                        • Pedido de senha por link de e-mail<br>
-                    </p>
-                `;
+                if (resultDiv) {
+                    resultDiv.style.display = 'block';
+                    resultDiv.className = 'warning-result';
+                    resultDiv.innerHTML = `
+                        <h3>⚠️ ATENÇÃO!</h3>
+                        <p><strong>Você caiu em um teste de phishing!</strong></p>
+                        <p>Este foi um teste de segurança. Você acabou de inserir suas credenciais em um site falso!</p>
+                        <p style="margin-top: 10px;">
+                            <strong>Sinais de phishing nesta página:</strong><br>
+                            • URL suspeita (não é o domínio oficial do banco)<br>
+                            • Mensagem de urgência (bloqueio em 24h)<br>
+                            • Pedido de senha por link de e-mail<br>
+                        </p>
+                    `;
+                }
 
                 // Limpar formulário
                 document.getElementById('loginForm').reset();
+                
+                // Redirecionar após alguns segundos
+                setTimeout(() => {
+                    alert('Este foi um treinamento de segurança!\n\nVocê receberá um e-mail educativo com dicas para identificar phishing.');
+                }, 3000);
             } catch (error) {
-                console.error('Erro:', error);
+                console.error('🏦 [Banco] Erro:', error);
                 alert('Erro ao processar dados');
             }
         });

@@ -25,22 +25,52 @@ export default function Dashboard() {
   const [ranking, setRanking] = useState<RankingUser[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Função para buscar dados
+  const fetchData = async () => {
+    // Aguardar o user estar disponível
+    if (!user?.id) {
+      return;
+    }
+
+    try {
+      const [statsRes, rankingRes] = await Promise.all([
+        api.get(`/users/stats/${user.id}`),
+        api.get('/users/ranking'),
+      ]);
+      setStats(statsRes.data.stats);
+      setRanking(rankingRes.data.ranking);
+    } catch (err) {
+      console.error('Erro ao carregar dados:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [statsRes, rankingRes] = await Promise.all([
-          api.get(`/users/stats/${user?.id}`),
-          api.get('/users/ranking'),
-        ]);
-        setStats(statsRes.data.stats);
-        setRanking(rankingRes.data.ranking);
-      } catch (err) {
-        console.error('Erro ao carregar dados:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchData();
+
+    // Atualizar ranking a cada 10 segundos
+    const intervalId = setInterval(() => {
+      if (user?.id) {
+        fetchData();
+      }
+    }, 10000); // 10 segundos
+
+    // Limpar interval quando o componente desmontar
+    return () => clearInterval(intervalId);
+  }, [user?.id]);
+
+  // Listener para evento de novo usuário registrado
+  useEffect(() => {
+    const handleUserRegistered = () => {
+      fetchData();
+    };
+
+    window.addEventListener('userRegistered', handleUserRegistered);
+    
+    return () => {
+      window.removeEventListener('userRegistered', handleUserRegistered);
+    };
   }, [user?.id]);
 
   const handleLogout = () => {

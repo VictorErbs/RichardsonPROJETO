@@ -30,13 +30,34 @@ export const processAutoCampaigns = async () => {
       }
 
       // Send to all users (you can filter target audiences here)
-      const users = await prisma.user.findMany({ where: {} });
-      const results = await Promise.all(
-        users.map((user) => sendPhishingEmail(user as any, campaign as any))
-      );
+      // Otimização: buscar apenas campos necessários
+      const users = await prisma.user.findMany({ 
+        where: { role: 'USER' },
+        select: {
+          id: true,
+          name: true,
+          email: true
+        }
+      });
 
-      const successCount = results.filter((r) => (r as any).success).length;
-      console.log(`📨 Scheduler: campaign "${campaign.title}" sent to ${successCount}/${users.length}`);
+      // Otimização: enviar em lotes de 10 para não sobrecarregar
+      const batchSize = 10;
+      for (let i = 0; i < users.length; i += batchSize) {
+        const batch = users.slice(i, i + batchSize);
+        const results = await Promise.all(
+          batch.map((user) => sendPhishingEmail(user as any, campaign as any))
+        );
+        
+        const successCount = results.filter((r) => (r as any).success).length;
+        console.log(`📨 Batch ${Math.floor(i / batchSize) + 1}: ${successCount}/${batch.length} sent`);
+        
+        // Aguardar 2 segundos entre lotes
+        if (i + batchSize < users.length) {
+          await new Promise(resolve => setTimeout(resolve, 2000));
+        }
+      }
+
+      console.log(`✅ Scheduler: campaign "${campaign.title}" completed`);
 
       await prisma.campaign.update({
         where: { id: campaign.id },
