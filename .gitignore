@@ -4,13 +4,12 @@ node_modules/
 # Build output
 dist/
 
-# Environment variables
-.env
+# Environment variables (comentado para permitir commit do .env - APENAS PARA FINS EDUCACIONAIS)
+# .env
 
-# Database
-*.db
-*.db-journal
-prisma/migrations/
+# Database (comentado para permitir commit do banco - APENAS PARA FINS EDUCACIONAIS)
+# *.db
+# *.db-journal
 
 # Logs
 logs/

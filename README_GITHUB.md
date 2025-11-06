@@ -4,14 +4,15 @@
 
 ## 📋 Sobre o Projeto
 
-Este é um sistema full-stack de simulação de ataques de phishing, desenvolvido para fins educacionais. A plataforma permite que administradores enviem campanhas de phishing simuladas para usuários, rastreiem interações e forneçam feedback educativo imediato.
+Este é um sistema full-stack de simulação de ataques de phishing, desenvolvido para fins educacionais. A plataforma permite que administradores enviem campanhas de phishing simuladas para usuários cadastrados, rastreiem interações em tempo real e forneçam feedback educativo imediato.
 
 ### 🎯 Objetivos
 
-- Conscientizar usuários sobre ataques de phishing
-- Treinar equipes para identificar emails maliciosos
-- Medir a vulnerabilidade organizacional através de métricas
-- Fornecer feedback educativo após cada interação
+- Conscientizar usuários sobre ataques de phishing através de simulações realistas
+- Treinar equipes para identificar emails maliciosos e práticas suspeitas
+- Medir a vulnerabilidade organizacional através de métricas detalhadas
+- Fornecer feedback educativo automatizado após cada interação
+- Gamificar o aprendizado com sistema de pontos, níveis e ranking
 
 ## 🚀 Tecnologias Utilizadas
 
@@ -34,25 +35,31 @@ Este é um sistema full-stack de simulação de ataques de phishing, desenvolvid
 
 ### Para Administradores
 - ✅ Criar e gerenciar campanhas de phishing personalizadas
-- ✅ Enviar emails sob demanda para usuários cadastrados
-- ✅ Dashboard com estatísticas completas
-- ✅ Visualizar cliques, submissões e taxa de sucesso
-- ✅ Gerenciar usuários e suas métricas
+- ✅ **Enviar campanhas sob demanda** com botão "Enviar Agora"
+- ✅ Dashboard administrativo com estatísticas completas
+- ✅ Visualizar cliques, submissões e taxa de sucesso em tempo real
+- ✅ Gerenciar usuários e suas métricas de segurança
+- ✅ Configurar dificuldade e pontuação das campanhas
 
 ### Para Usuários
-- ✅ Receber emails de phishing simulados
-- ✅ Dashboard pessoal com estatísticas
-- ✅ Sistema de pontuação e gamificação
-- ✅ Ranking de performance
-- ✅ Feedback educativo após interações
+- ✅ Cadastro simples e seguro (sem credenciais de teste expostas)
+- ✅ Receber emails de phishing simulados realistas
+- ✅ Dashboard pessoal com estatísticas individuais
+- ✅ Sistema de pontuação e gamificação (pontos e níveis)
+- ✅ Ranking global comparativo entre usuários
+- ✅ Feedback educativo automático após cada interação
 
 ### Sistema
 - ✅ Tracking de abertura de emails (pixel invisível)
-- ✅ Rastreamento de cliques em links
+- ✅ Rastreamento de cliques em links suspeitos
 - ✅ Captura de credenciais em páginas fake
-- ✅ Envio automático de email educativo
-- ✅ Sistema de pontos e níveis
-- ✅ API RESTful completa
+- ✅ Envio automático de email educativo pós-interação
+- ✅ Sistema de pontos, níveis e ranking
+- ✅ API RESTful completa e documentada
+- ✅ Autenticação JWT com rotas protegidas
+- ✅ Integração com Resend para envio de emails em produção
+- ✅ Suporte a múltiplos provedores de email (SMTP/Resend)
+- ✅ Scripts utilitários para reset de estatísticas e envio único
 
 ## 📦 Estrutura do Projeto
 
@@ -187,7 +194,7 @@ Após executar o seed:
 - `GET /api/campaigns` - Listar campanhas
 - `GET /api/campaigns/:id` - Detalhes da campanha
 - `POST /api/campaigns` - Criar campanha (admin)
-- `POST /api/campaigns/:id/send-once` - Enviar campanha (admin)
+- `POST /api/campaigns/:id/send-once` - **Enviar campanha sob demanda** (admin)
 
 ### Usuários
 - `GET /api/users` - Listar usuários (admin)

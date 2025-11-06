@@ -2,7 +2,7 @@
 
 > **Plataforma Educativa de Conscientização contra Ataques de Phishing**
 
-Sistema completo que envia e-mails de phishing simulados, rastreia comportamento dos usuários e envia notificações educativas para treinar pessoas a identificar ataques reais.
+Sistema completo full-stack que envia e-mails de phishing simulados, rastreia comportamento dos usuários em tempo real e fornece feedback educativo automatizado para treinar pessoas a identificar ataques reais.
 
 ---
 
@@ -10,41 +10,50 @@ Sistema completo que envia e-mails de phishing simulados, rastreia comportamento
 
 Este é um **simulador realista de ataques de phishing** criado para fins educacionais. Ele simula todo o fluxo de um ataque real:
 
-1. 📧 **E-mail Falso** é enviado para o usuário
-2. 🎣 **Link Suspeito** redireciona para página fake
-3. 📊 **Sistema Rastreia** se o usuário:
-   - Abriu o e-mail
+1. 📧 **E-mail Falso** é enviado para o usuário cadastrado
+2. 🎣 **Link Suspeito** redireciona para página fake realista
+3. 📊 **Sistema Rastreia** em tempo real se o usuário:
+   - Abriu o e-mail (pixel invisível)
    - Clicou no link
    - Inseriu credenciais
 4. 📩 **E-mail Educativo** é enviado automaticamente explicando o erro
-5. 🏆 **Gamificação** com pontos e ranking
+5. 🏆 **Gamificação** com sistema de pontos, níveis e ranking global
 
-**Objetivo:** Treinar usuários a identificar sinais de phishing sem riscos reais.
+**Objetivo:** Treinar usuários a identificar sinais de phishing sem riscos reais através de simulações práticas e feedback imediato.
 
 ---
 
 ## 🚀 Funcionalidades Principais
 
 ### Para Administradores:
-- ✅ Criar campanhas de phishing personalizadas
-- ✅ Enviar e-mails em massa para usuários
-- ✅ Visualizar métricas e estatísticas
-- ✅ Gerenciar usuários e campanhas
-- ✅ Dashboard com taxa de cliques e submissões
+- ✅ Criar e gerenciar campanhas de phishing personalizadas
+- ✅ **Enviar campanhas sob demanda** com botão "Enviar Agora"
+- ✅ Dashboard administrativo com estatísticas completas de todos os usuários
+- ✅ Visualizar métricas detalhadas: cliques, submissões e taxa de sucesso
+- ✅ Gerenciar usuários e suas métricas de segurança
+- ✅ Configurar dificuldade e pontuação das campanhas
 
 ### Para Usuários:
-- ✅ Receber e-mails de phishing simulados
-- ✅ Aprender com feedback educativo imediato
-- ✅ Ganhar pontos por identificar phishing
-- ✅ Ver progresso no ranking
-- ✅ Certificado de conscientização
+- ✅ Cadastro simples e seguro (sem credenciais de teste expostas)
+- ✅ Receber e-mails de phishing simulados realistas
+- ✅ Dashboard pessoal com estatísticas individuais
+- ✅ Aprender com feedback educativo automático imediato
+- ✅ Sistema de pontuação e gamificação (pontos e níveis)
+- ✅ Ranking global comparativo entre usuários
+- ✅ Acompanhar progresso e taxa de segurança pessoal
 
 ### Sistema:
 - ✅ Tracking de abertura de e-mails (pixel invisível)
-- ✅ Tracking de cliques em links
+- ✅ Rastreamento de cliques em links suspeitos
 - ✅ Captura de credenciais em páginas fake
-- ✅ Envio automático de e-mail educativo
-- ✅ Banco de dados com histórico completo
+- ✅ Envio automático de e-mail educativo pós-interação
+- ✅ Sistema de pontos, níveis e ranking
+- ✅ API RESTful completa e documentada
+- ✅ Autenticação JWT com rotas protegidas
+- ✅ Integração com Resend para envio de emails em produção
+- ✅ Suporte a múltiplos provedores de email (SMTP/Resend)
+- ✅ Scripts utilitários para reset de estatísticas e envio único
+- ✅ Banco de dados com histórico completo de interações
 
 ---
 
