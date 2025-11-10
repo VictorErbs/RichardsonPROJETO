@@ -1,5 +1,17 @@
 import prisma from '../config/database';
 import { getMailProvider } from './mail.provider';
+import nodemailer from 'nodemailer';
+
+// Configure SMTP transporter
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST,
+  port: parseInt(process.env.SMTP_PORT || '587', 10),
+  secure: false, // true for 465, false for other ports
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
+  },
+});
 
 const mailProvider = getMailProvider();
 
@@ -19,7 +31,26 @@ interface Campaign {
   targetUrl: string;
 }
 
+export const sendEmailViaSMTP = async ({ from, to, subject, html, replyTo }: { from: string; to: string; subject: string; html: string; replyTo?: string }) => {
+  console.log('📤 [sendEmailViaSMTP] Sending email via SMTP', { from, to, subject });
+  try {
+    const info = await transporter.sendMail({
+      from,
+      to,
+      subject,
+      html,
+      replyTo,
+    });
+    console.log('📧 [sendEmailViaSMTP] Email sent successfully:', info.messageId);
+    return { success: true };
+  } catch (error) {
+    console.error('❌ [sendEmailViaSMTP] Error sending email via SMTP:', error);
+    return { success: false, error };
+  }
+};
+
 export const sendPhishingEmail = async (user: User, campaign: Campaign) => {
+  console.log('📤 [sendPhishingEmail] Preparing to send phishing email', { user, campaign });
   try {
     // Criar log do e-mail
     const emailLog = await prisma.emailLog.create({
@@ -28,6 +59,7 @@ export const sendPhishingEmail = async (user: User, campaign: Campaign) => {
         campaignId: campaign.id
       }
     });
+    console.log('📝 [sendPhishingEmail] Email log created:', emailLog.id);
 
     // Gerar URLs de tracking
     const trackingUrl = `${process.env.BACKEND_URL}/api/tracking/click/${emailLog.id}`;
@@ -63,18 +95,22 @@ export const sendPhishingEmail = async (user: User, campaign: Campaign) => {
     }
 
     // Enviar e-mail
-    await mailProvider.send({
-      from: `"${campaign.senderName}" <${process.env.EMAIL_FROM}>`,
+    const result = await sendEmailViaSMTP({
+      from: `${campaign.senderName} <${process.env.EMAIL_FROM}>`,
       to: recipientEmail,
       subject: emailSubject,
       html: finalEmailBody,
       replyTo: campaign.senderEmail,
     });
 
-    console.log(`✅ E-mail enviado para ${user.email}${isAcademicMode ? ` (redirecionado para ${recipientEmail})` : ''}`);
-    return { success: true, emailLogId: emailLog.id };
+    if (result.success) {
+      console.log(`✅ [sendPhishingEmail] Email sent to ${user.email}${isAcademicMode ? ` (redirected to ${recipientEmail})` : ''}`);
+      return { success: true, emailLogId: emailLog.id };
+    } else {
+      throw result.error;
+    }
   } catch (error) {
-    console.error(`❌ Erro ao enviar e-mail para ${user.email}:`, error);
+    console.error(`❌ [sendPhishingEmail] Error sending email to ${user.email}:`, error);
     return { success: false, error };
   }
 };
@@ -84,6 +120,7 @@ export const sendEducationalEmail = async (
   campaign: Campaign,
   action: 'click' | 'submission'
 ) => {
+  console.log('📤 [sendEducationalEmail] Preparing to send educational email', { user, campaign, action });
   try {
     const actionText = action === 'click' 
       ? 'clicou no link suspeito'
@@ -175,24 +212,25 @@ export const sendEducationalEmail = async (
       html,
     });
 
-    console.log(`📧 E-mail educativo enviado para ${user.email}`);
+    console.log(`📧 [sendEducationalEmail] Educational email sent to ${user.email}`);
     return { success: true };
   } catch (error) {
-    console.error(`❌ Erro ao enviar e-mail educativo:`, error);
+    console.error(`❌ [sendEducationalEmail] Error sending educational email:`, error);
     return { success: false, error };
   }
 };
 
 // Testar configuração de e-mail
 export const testEmailConnection = async () => {
+  console.log('🔌 [testEmailConnection] Testing email server connection');
   try {
     if (mailProvider.verify) {
       await mailProvider.verify();
     }
-    console.log('✅ Servidor de e-mail conectado com sucesso');
+    console.log('✅ [testEmailConnection] Email server connected successfully');
     return true;
   } catch (error) {
-    console.error('❌ Erro ao conectar ao servidor de e-mail:', error);
+    console.error('❌ [testEmailConnection] Error connecting to email server:', error);
     return false;
   }
 };
@@ -204,13 +242,13 @@ export const sendRawEmail = async (opts: {
   from?: string;
   replyTo?: string;
 }) => {
-  const from = opts.from || (process.env.EMAIL_FROM || 'onboarding@resend.dev');
-  await mailProvider.send({
+  console.log('📤 [sendRawEmail] Sending raw email', opts);
+  const from = opts.from || (process.env.EMAIL_FROM || 'onboarding@brevo.com');
+  return sendEmailViaSMTP({
     from,
     to: opts.to,
     subject: opts.subject,
     html: opts.html,
     replyTo: opts.replyTo,
   });
-  return { success: true };
 };
