@@ -44,6 +44,14 @@ export const register = async (req: Request, res: Response) => {
 
     // Gerar token (usar segundos numéricos para compatibilidade com jsonwebtoken@9)
     const jwtSecret = process.env.JWT_SECRET as string;
+    if (!jwtSecret) {
+      console.error('JWT_SECRET is not set in environment variables.');
+      return res.status(500).json({ error: 'JWT_SECRET not configured' });
+    }
+    if (!jwtSecret) {
+      console.error('JWT_SECRET is not set in environment variables.');
+      return res.status(500).json({ error: 'JWT_SECRET not configured' });
+    }
     const expiresInEnv = process.env.JWT_EXPIRES_IN;
     const expiresIn = expiresInEnv && !isNaN(Number(expiresInEnv))
       ? Number(expiresInEnv)
@@ -69,6 +77,7 @@ export const register = async (req: Request, res: Response) => {
 export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
+    console.log(`POST /api/auth/login attempt for email: ${email}`);
 
     if (!email || !password) {
       return res.status(400).json({ error: 'E-mail e senha são obrigatórios' });
@@ -116,7 +125,8 @@ export const login = async (req: Request, res: Response) => {
       token
     });
   } catch (error) {
-    console.error('Erro no login:', error);
+    console.error('Erro no login:', error instanceof Error ? error.message : error);
+    if (error instanceof Error && error.stack) console.error(error.stack);
     res.status(500).json({ error: 'Erro ao fazer login' });
   }
 };
